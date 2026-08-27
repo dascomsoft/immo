@@ -1,0 +1,46 @@
+export const PROPERTY_TYPES = {
+  ROOM: 'ROOM',
+  STUDIO: 'STUDIO',
+  APARTMENT: 'APARTMENT',
+  HOUSE: 'HOUSE',
+  VILLA: 'VILLA',
+  DUPLEX: 'DUPLEX',
+  LAND: 'LAND',
+  OFFICE: 'OFFICE',
+  SHOP: 'SHOP',
+  BUILDING: 'BUILDING',
+  OTHER: 'OTHER',
+} as const
+
+export const TRANSACTION_TYPES = {
+  SALE: 'SALE',
+  RENT: 'RENT',
+} as const
+
+export const PROPERTY_STATUS = {
+  AVAILABLE: 'AVAILABLE',
+  SOLD: 'SOLD',
+  RENTED: 'RENTED',
+  UNAVAILABLE: 'UNAVAILABLE',
+} as const
+
+export const REQUEST_TYPES = {
+  INFORMATION: 'INFORMATION',
+  VISIT: 'VISIT',
+  RENT: 'RENT',
+  BUY: 'BUY',
+  OTHER: 'OTHER',
+} as const
+
+export const REQUEST_STATUS = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+} as const
+
+export const USER_ROLES = {
+  ADMIN: 'ADMIN',
+  AGENT: 'AGENT',
+  VIEWER: 'VIEWER',
+} as const
