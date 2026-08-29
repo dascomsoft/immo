@@ -7,12 +7,11 @@
     "node": ">=20.0.0 <22.0.0"
   },
   "scripts": {
-    "prebuild": "sed -i 's/\"moduleResolution\":\\s*\"node10\"/\"moduleResolution\": \"node\"/g' tsconfig.json 2>/dev/null || echo '✅ tsconfig already fixed'",
-    "build": "tsc",
-    "postbuild": "echo '✅ Build completed successfully'",
-    "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "seed": "ts-node src/scripts/seed.ts"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "seed": "ts-node src/scripts/seed.ts",
+    "prebuild": "sed -i 's/\"moduleResolution\":\\s*\"node10\"/\"moduleResolution\": \"node\"/g' tsconfig.json 2>/dev/null || echo '✅ tsconfig already fixed'"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -26,7 +25,8 @@
     "express-rate-limit": "^7.1.5",
     "helmet": "^7.1.0",
     "nodemailer": "^6.9.7",
-    "express-validator": "^7.0.1"
+    "express-validator": "^7.0.1",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
@@ -37,6 +37,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/express-rate-limit": "^6.0.1",
     "@types/nodemailer": "^6.4.14",
+    "@types/validator": "^13.11.9",
     "typescript": "^5.3.3",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.2"
