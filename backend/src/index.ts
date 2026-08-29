@@ -19,13 +19,21 @@ const PORT = process.env.PORT || 5000
 connectDB()
 
 // Middleware
-app.use(helmet())
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}))
+
+// 🔥 CORS doit être appliqué avant les routes
 app.use(cors(corsOptions))
+
+// Body parser
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
-// Rate Limiting
-app.use(rateLimiter)
+// Rate Limiting (sauf en production si nécessaire)
+if (process.env.NODE_ENV === 'production') {
+  app.use(rateLimiter)
+}
 
 // Routes
 app.use('/api', routes)
