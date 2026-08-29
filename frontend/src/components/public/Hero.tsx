@@ -7,8 +7,16 @@ import SearchBar from '@/components/common/SearchBar'
 export default function Hero() {
   return (
     <section className="relative min-h-[80vh] flex items-center bg-chocolate-deep">
-      {/* Background décoratif */}
-      <div className="absolute inset-0 bg-gradient-to-b from-chocolate-deep/90 via-chocolate-deep/50 to-chocolate-deep" />
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url('/images/immo.webp')",
+        }}
+      />
+      
+      {/* Overlay pour la lisibilité */}
+      <div className="absolute inset-0 bg-gradient-to-b from-chocolate-deep/80 via-chocolate-deep/60 to-chocolate-deep" />
       
       <div className="container mx-auto px-4 relative z-10 py-16">
         <div className="max-w-4xl mx-auto text-center">
