@@ -1,15 +1,17 @@
 import { Request, Response, NextFunction } from 'express'
-import { body, validationResult } from 'express-validator'
+
+// Utiliser require pour express-validator
+const { check, validationResult } = require('express-validator')
 
 export const validateProperty = [
-  body('title').notEmpty().withMessage('Le titre est requis'),
-  body('description').notEmpty().withMessage('La description est requise'),
-  body('type').notEmpty().withMessage('Le type est requis'),
-  body('transactionType').notEmpty().withMessage('Le type de transaction est requis'),
-  body('price').isNumeric().withMessage('Le prix doit être un nombre'),
-  body('city').notEmpty().withMessage('La ville est requise'),
-  body('address').notEmpty().withMessage('L\'adresse est requise'),
-  body('area').isNumeric().withMessage('La superficie doit être un nombre'),
+  check('title').notEmpty().withMessage('Le titre est requis'),
+  check('description').notEmpty().withMessage('La description est requise'),
+  check('type').notEmpty().withMessage('Le type est requis'),
+  check('transactionType').notEmpty().withMessage('Le type de transaction est requis'),
+  check('price').isNumeric().withMessage('Le prix doit être un nombre'),
+  check('city').notEmpty().withMessage('La ville est requise'),
+  check('address').notEmpty().withMessage('L\'adresse est requise'),
+  check('area').isNumeric().withMessage('La superficie doit être un nombre'),
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -24,10 +26,10 @@ export const validateProperty = [
 ]
 
 export const validateContact = [
-  body('name').notEmpty().withMessage('Le nom est requis'),
-  body('phone').notEmpty().withMessage('Le téléphone est requis'),
-  body('email').isEmail().withMessage('Email invalide'),
-  body('message').notEmpty().withMessage('Le message est requis'),
+  check('name').notEmpty().withMessage('Le nom est requis'),
+  check('phone').notEmpty().withMessage('Le téléphone est requis'),
+  check('email').isEmail().withMessage('Email invalide'),
+  check('message').notEmpty().withMessage('Le message est requis'),
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -42,11 +44,11 @@ export const validateContact = [
 ]
 
 export const validateVisit = [
-  body('name').notEmpty().withMessage('Le nom est requis'),
-  body('phone').notEmpty().withMessage('Le téléphone est requis'),
-  body('email').isEmail().withMessage('Email invalide'),
-  body('propertyId').notEmpty().withMessage('Le bien est requis'),
-  body('preferredDate').isISO8601().withMessage('Date invalide'),
+  check('name').notEmpty().withMessage('Le nom est requis'),
+  check('phone').notEmpty().withMessage('Le téléphone est requis'),
+  check('email').isEmail().withMessage('Email invalide'),
+  check('propertyId').notEmpty().withMessage('Le bien est requis'),
+  check('preferredDate').isISO8601().withMessage('Date invalide'),
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
