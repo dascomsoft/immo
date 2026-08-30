@@ -1,23 +1,33 @@
 import { CorsOptions } from 'cors'
 
+const configuredOrigins = (process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean)
+
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
-  process.env.CORS_ORIGIN,
-].filter(Boolean) as string[]
-
-console.log('🔐 CORS allowed origins:', allowedOrigins)
+  ...configuredOrigins,
+]
 
 export const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
-    // Autoriser les requêtes sans Origin
-    // Exemple : curl, Postman, certains health checks
     if (!origin) {
       return callback(null, true)
     }
 
     if (allowedOrigins.includes(origin)) {
       console.log(`✅ CORS allowed: ${origin}`)
+      return callback(null, true)
+    }
+
+    // Autoriser uniquement les previews Vercel
+    // correspondant au projet IMMO
+    if (
+      /^https:\/\/immo-[a-z0-9]+-dascomsofts-projects\.vercel\.app$/.test(origin)
+    ) {
+      console.log(`✅ CORS allowed Vercel preview: ${origin}`)
       return callback(null, true)
     }
 
