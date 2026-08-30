@@ -8,22 +8,25 @@ const configuredOrigins = (process.env.CORS_ORIGIN || '')
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
+  'https://immo-five-eta.vercel.app',
   ...configuredOrigins,
 ]
 
 export const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
+    // Autoriser les requêtes sans Origin
+    // (Postman, curl, health checks, etc.)
     if (!origin) {
       return callback(null, true)
     }
 
+    // Origines explicitement autorisées
     if (allowedOrigins.includes(origin)) {
       console.log(`✅ CORS allowed: ${origin}`)
       return callback(null, true)
     }
 
-    // Autoriser uniquement les previews Vercel
-    // correspondant au projet IMMO
+    // Autoriser les previews Vercel du projet IMMO
     if (
       /^https:\/\/immo-[a-z0-9]+-dascomsofts-projects\.vercel\.app$/.test(origin)
     ) {
