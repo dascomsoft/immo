@@ -2,6 +2,7 @@ import express, { Express } from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import dotenv from 'dotenv'
+
 import connectDB from './config/database'
 import { corsOptions } from './config/cors'
 import { errorHandler } from './middleware/errorHandler'
@@ -13,48 +14,96 @@ dotenv.config()
 
 // Initialiser Express
 const app: Express = express()
+
+// Render fournit automatiquement PORT
 const PORT = process.env.PORT || 5000
 
-// Connexion à MongoDB
+// ========================================
+// CONNEXION MONGODB
+// ========================================
+
 connectDB()
 
-// Middleware
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
-}))
+// ========================================
+// SECURITY
+// ========================================
 
-// 🔥 CORS doit être appliqué avant les routes
+app.use(
+  helmet({
+    crossOriginResourcePolicy: {
+      policy: 'cross-origin',
+    },
+  })
+)
+
+// ========================================
+// CORS
+// ========================================
+
 app.use(cors(corsOptions))
 
-// Body parser
-app.use(express.json({ limit: '10mb' }))
-app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+// ========================================
+// BODY PARSER
+// ========================================
 
-// Rate Limiting (sauf en production si nécessaire)
+app.use(
+  express.json({
+    limit: '10mb',
+  })
+)
+
+app.use(
+  express.urlencoded({
+    extended: true,
+    limit: '10mb',
+  })
+)
+
+// ========================================
+// RATE LIMITING
+// ========================================
+
 if (process.env.NODE_ENV === 'production') {
   app.use(rateLimiter)
 }
 
-// Routes
+// ========================================
+// API ROUTES
+// ========================================
+
 app.use('/api', routes)
 
-// Health check
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
+// ========================================
+// HEALTH CHECK
+// ========================================
+
+app.get('/health', (_req, res) => {
+  res.status(200).json({
+    status: 'OK',
     message: 'Server is running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   })
 })
 
-// Error handler
+// ========================================
+// ERROR HANDLER
+// ========================================
+
 app.use(errorHandler)
 
-// Démarrer le serveur
+// ========================================
+// START SERVER
+// ========================================
+
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`)
-  console.log(`📡 API URL: http://localhost:${PORT}/api`)
-  console.log(`💚 Health check: http://localhost:${PORT}/health`)
+  console.log('========================================')
+  console.log('🚀 IMMOBILIER BACKEND')
+  console.log('========================================')
+  console.log(`🌍 Environment: ${process.env.NODE_ENV}`)
+  console.log(`🚀 Server running on port: ${PORT}`)
+  console.log(`📡 API: /api`)
+  console.log(`💚 Health: /health`)
+  console.log('========================================')
 })
 
 export default app

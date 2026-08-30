@@ -25,7 +25,7 @@ export default function Hero() {
             <span className="text-bronze">notre priorité.</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-stone-light max-w-2xl mx-auto mb-10">
+          <p className="text-lg md:text-xl text-white max-w-2xl mx-auto mb-10">
             Découvrez des biens adaptés à vos besoins et bénéficiez d'un accompagnement professionnel.
           </p>
           
