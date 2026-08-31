@@ -46,7 +46,6 @@ export default function PropertyCard({
     UNAVAILABLE: 'Indisponible',
   }
 
-  // 🔥 Fonction robuste pour extraire l'URL de l'image
   const getImageUrl = (): string => {
     if (!images || !Array.isArray(images) || images.length === 0) {
       return '/images/default-property.jpg'
@@ -67,20 +66,26 @@ export default function PropertyCard({
 
   const imageUrl = getImageUrl()
 
+  // 🔍 LOGS POUR DEBUG
+  console.log('🏠 Property:', title)
+  console.log('🖼️ Images:', images)
+  console.log('🔗 Image URL:', imageUrl)
+  console.log('📱 User Agent:', navigator.userAgent)
+
   return (
     <div className="group bg-stone-dark rounded-2xl overflow-hidden border border-stone-medium hover:border-bronze transition-all hover:-translate-y-1 h-full">
       <div className="relative h-56 overflow-hidden bg-chocolate-deep">
-        {/* 🔥 Utilisation d'une balise <img> standard au lieu de next/image */}
         <img
           src={imageUrl}
           alt={title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           loading="lazy"
           onError={(e) => {
+            console.error(`❌ Erreur chargement image pour "${title}":`, imageUrl)
             const target = e.currentTarget
             if (!target.src.endsWith('/images/default-property.jpg')) {
-              console.error(`❌ Erreur chargement image: ${imageUrl}`)
               target.src = '/images/default-property.jpg'
+              console.log(`🔄 Fallback vers default-property.jpg pour "${title}"`)
             }
           }}
         />
