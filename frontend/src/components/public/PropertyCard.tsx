@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { MapPin, BedDouble, Bath, Ruler, Heart } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 interface PropertyCardProps {
   _id: string
@@ -35,6 +35,7 @@ export default function PropertyCard({
 }: PropertyCardProps) {
   const [imageError, setImageError] = useState(false)
   const [imageLoading, setImageLoading] = useState(true)
+  const imgRef = useRef<HTMLImageElement>(null) // ← 1. REF pour anti-race condition
 
   const statusColors: Record<string, string> = {
     AVAILABLE: 'bg-green-500/20 text-green-400',
@@ -50,11 +51,8 @@ export default function PropertyCard({
     UNAVAILABLE: 'Indisponible',
   }
 
-  // Fonction pour obtenir l'URL de l'image avec fallback
   const getImageUrl = (): string => {
-    if (!Array.isArray(images) || images.length === 0) {
-      return ''
-    }
+    if (!Array.isArray(images) || images.length === 0) return ''
 
     const firstImage = images[0]
 
@@ -65,15 +63,9 @@ export default function PropertyCard({
       firstImage.url.trim() !== ''
     ) {
       let url = firstImage.url.trim()
-      
-      // 🚀 Pour Cloudinary, essayer différents formats si un échoue
-      if (url.includes('cloudinary.com')) {
-        // Format le plus compatible (JPG)
-        if (!url.includes('q_')) {
-          return url.replace('/upload/', '/upload/q_60,f_jpg/')
-        }
+      if (url.includes('cloudinary.com') && !url.includes('q_')) {
+        return url.replace('/upload/', '/upload/q_60,f_jpg/')
       }
-      
       return url
     }
 
@@ -86,7 +78,13 @@ export default function PropertyCard({
 
   const imageUrl = getImageUrl()
 
-  // Logs en développement
+  // ← 2. ANTI-RACE CONDITION : si l'image est déjà en cache au montage
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete && imageUrl && !imageError) {
+      setImageLoading(false)
+    }
+  }, [imageUrl, imageError])
+
   if (process.env.NODE_ENV === 'development') {
     console.log('🏠 Property:', title)
     console.log('🖼️ Images:', images)
@@ -108,23 +106,22 @@ export default function PropertyCard({
   return (
     <div className="group bg-stone-dark rounded-2xl overflow-hidden border border-stone-medium hover:border-bronze transition-all hover:-translate-y-1 h-full">
       <div className="relative h-56 overflow-hidden bg-chocolate-deep">
-        {/* Loader */}
+        
+        {/* Loader — z-10 pour rester sous l'image mais visible */}
         {imageLoading && imageUrl && !imageError && (
-          <div className="absolute inset-0 flex items-center justify-center bg-chocolate-deep z-0">
+          <div className="absolute inset-0 flex items-center justify-center bg-chocolate-deep z-10">
             <div className="w-8 h-8 border-4 border-stone-medium border-t-bronze rounded-full animate-spin" />
           </div>
         )}
 
-        {/* Image ou fallback */}
+        {/* Image — absolute inset-0, plus d'opacity trap */}
         {imageUrl && !imageError ? (
           <img
+            ref={imgRef}
             src={imageUrl}
             alt={title}
-            className={`relative z-[1] w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${
-              imageLoading ? 'opacity-0' : 'opacity-100'
-            }`}
-            loading="lazy"
-            decoding="async"
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+            loading="eager"        // ← 3. EAGER au lieu de LAZY
             onLoad={handleImageLoad}
             onError={handleImageError}
           />
@@ -137,29 +134,25 @@ export default function PropertyCard({
           </div>
         )}
 
-        {/* Boutons et badges */}
+        {/* Overlays — z-20 pour rester au-dessus de l'image */}
         <button
           type="button"
-          className="absolute top-3 right-3 bg-chocolate-deep/80 p-2 rounded-full hover:bg-chocolate-deep transition-colors z-10"
+          className="absolute top-3 right-3 bg-chocolate-deep/80 p-2 rounded-full hover:bg-chocolate-deep transition-colors z-20"
           aria-label="Ajouter aux favoris"
         >
           <Heart className="w-5 h-5 text-cream-light hover:text-bronze transition-colors" />
         </button>
 
-        <div className="absolute top-3 left-3 flex gap-2 z-10">
+        <div className="absolute top-3 left-3 flex gap-2 z-20">
           <span className="bg-chocolate-deep/80 px-3 py-1 rounded-full text-sm text-cream-light">
             {type}
           </span>
-          <span
-            className={`px-3 py-1 rounded-full text-sm ${
-              statusColors[status] || 'bg-gray-500/20 text-gray-400'
-            }`}
-          >
+          <span className={`px-3 py-1 rounded-full text-sm ${statusColors[status] || 'bg-gray-500/20 text-gray-400'}`}>
             {statusLabels[status] || status}
           </span>
         </div>
 
-        <div className="absolute bottom-3 right-3 bg-chocolate-deep/80 px-3 py-1 rounded-full z-10">
+        <div className="absolute bottom-3 right-3 bg-chocolate-deep/80 px-3 py-1 rounded-full z-20">
           <span className="text-bronze font-bold">
             {transactionType === 'SALE' ? 'Vente' : 'Location'}
           </span>
