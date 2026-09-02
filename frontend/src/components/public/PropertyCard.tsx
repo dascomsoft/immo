@@ -35,15 +35,6 @@ export default function PropertyCard({
 }: PropertyCardProps) {
   const [imageError, setImageError] = useState(false)
   const [imageLoading, setImageLoading] = useState(true)
-  const [isAndroid, setIsAndroid] = useState(false)
-
-  useEffect(() => {
-    const userAgent = navigator.userAgent.toLowerCase()
-    const android = userAgent.includes('android')
-    setIsAndroid(android)
-    console.log('📱 Est-ce Android?', android)
-    console.log('📱 User Agent:', userAgent)
-  }, [])
 
   const statusColors: Record<string, string> = {
     AVAILABLE: 'bg-green-500/20 text-green-400',
@@ -59,9 +50,10 @@ export default function PropertyCard({
     UNAVAILABLE: 'Indisponible',
   }
 
-  const getImageUrl = (): string | null => {
+  // Fonction pour obtenir l'URL de l'image avec fallback
+  const getImageUrl = (): string => {
     if (!Array.isArray(images) || images.length === 0) {
-      return null
+      return ''
     }
 
     const firstImage = images[0]
@@ -74,24 +66,22 @@ export default function PropertyCard({
     ) {
       let url = firstImage.url.trim()
       
-      // 🔥 Pour Android, utiliser des paramètres très compatibles
-      if (isAndroid && url.includes('cloudinary.com')) {
-        // Utiliser JPG avec qualité moyenne et format simple
-        url = url.replace('/upload/', '/upload/q_60,f_auto/')
-        console.log('📱 Android - Image optimisée:', url)
+      // 🚀 Pour Cloudinary, essayer différents formats si un échoue
+      if (url.includes('cloudinary.com')) {
+        // Format le plus compatible (JPG)
+        if (!url.includes('q_')) {
+          return url.replace('/upload/', '/upload/q_60,f_jpg/')
+        }
       }
       
       return url
     }
 
-    if (
-      typeof firstImage === 'string' &&
-      firstImage.trim() !== ''
-    ) {
+    if (typeof firstImage === 'string' && firstImage.trim() !== '') {
       return firstImage.trim()
     }
 
-    return null
+    return ''
   }
 
   const imageUrl = getImageUrl()
@@ -106,20 +96,26 @@ export default function PropertyCard({
   const handleImageError = () => {
     console.error(`❌ Image impossible à charger pour "${title}"`)
     console.error('🔗 URL:', imageUrl)
-    console.error('📱 Android:', isAndroid)
     setImageError(true)
+    setImageLoading(false)
+  }
+
+  const handleImageLoad = () => {
+    console.log(`✅ Image chargée: ${title}`)
     setImageLoading(false)
   }
 
   return (
     <div className="group bg-stone-dark rounded-2xl overflow-hidden border border-stone-medium hover:border-bronze transition-all hover:-translate-y-1 h-full">
       <div className="relative h-56 overflow-hidden bg-chocolate-deep">
+        {/* Loader */}
         {imageLoading && imageUrl && !imageError && (
           <div className="absolute inset-0 flex items-center justify-center bg-chocolate-deep z-0">
             <div className="w-8 h-8 border-4 border-stone-medium border-t-bronze rounded-full animate-spin" />
           </div>
         )}
 
+        {/* Image ou fallback */}
         {imageUrl && !imageError ? (
           <img
             src={imageUrl}
@@ -129,10 +125,7 @@ export default function PropertyCard({
             }`}
             loading="lazy"
             decoding="async"
-            onLoad={() => {
-              console.log(`✅ Image chargée: ${title}`)
-              setImageLoading(false)
-            }}
+            onLoad={handleImageLoad}
             onError={handleImageError}
           />
         ) : (
@@ -144,6 +137,7 @@ export default function PropertyCard({
           </div>
         )}
 
+        {/* Boutons et badges */}
         <button
           type="button"
           className="absolute top-3 right-3 bg-chocolate-deep/80 p-2 rounded-full hover:bg-chocolate-deep transition-colors z-10"
