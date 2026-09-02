@@ -38,7 +38,6 @@ export default function PropertyCard({
   const [isAndroid, setIsAndroid] = useState(false)
 
   useEffect(() => {
-    // Détecter Android
     const userAgent = navigator.userAgent.toLowerCase()
     setIsAndroid(userAgent.includes('android'))
     console.log('📱 Est-ce Android?', userAgent.includes('android'))
@@ -73,13 +72,14 @@ export default function PropertyCard({
     ) {
       let url = firstImage.url.trim()
       
-      // 🔥 Pour Android, utiliser une version plus légère de l'image
+      // 🔥 Pour Android, utiliser le format WebP avec une qualité adaptée
       if (isAndroid && url.includes('cloudinary.com')) {
-        // Ajouter des paramètres pour réduire la qualité sur Android
-        if (!url.includes('quality')) {
-          url = url.replace('/upload/', '/upload/q_60/')
+        // Ajouter des paramètres pour Android
+        if (!url.includes('q_')) {
+          // Remplacer /upload/ par /upload/q_60,f_webp/ pour Android
+          url = url.replace('/upload/', '/upload/q_60,f_webp/')
+          console.log('📱 Android - Image optimisée:', url)
         }
-        console.log('📱 Android - Image optimisée:', url)
       }
       
       return url
@@ -97,7 +97,6 @@ export default function PropertyCard({
 
   const imageUrl = getImageUrl()
 
-  // Logs uniquement en développement
   if (process.env.NODE_ENV === 'development') {
     console.log('🏠 Property:', title)
     console.log('🖼️ Images:', images)
