@@ -74,10 +74,10 @@ export default function PropertyCard({
     ) {
       let url = firstImage.url.trim()
       
-      // 🔥 Pour Android, utiliser JPG avec qualité réduite (plus compatible)
+      // 🔥 Pour Android, utiliser des paramètres très compatibles
       if (isAndroid && url.includes('cloudinary.com')) {
-        // Remplacer par JPG avec qualité 70
-        url = url.replace('/upload/', '/upload/q_70,f_jpg/')
+        // Utiliser JPG avec qualité moyenne et format simple
+        url = url.replace('/upload/', '/upload/q_60,f_auto/')
         console.log('📱 Android - Image optimisée:', url)
       }
       
