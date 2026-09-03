@@ -39,14 +39,15 @@ export default function Modal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      {/* Overlay pour fermer en cliquant à l'extérieur */}
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/70 backdrop-blur-sm">
+      {/* Overlay */}
       <div 
         className="absolute inset-0" 
         onClick={onClose}
       />
       
-      <div className={`bg-stone-dark rounded-2xl w-full ${sizeClasses[size]} max-h-[90vh] overflow-y-auto relative z-10 shadow-2xl mx-4`}>
+      {/* 🔥 Modal très haut sur mobile */}
+      <div className={`bg-stone-dark rounded-2xl w-full ${sizeClasses[size]} max-h-[80vh] overflow-y-auto relative z-10 shadow-2xl mx-4 mt-12 md:mt-16 lg:mt-24`}>
         {/* Header */}
         <div className="sticky top-0 bg-stone-dark rounded-t-2xl p-4 md:p-6 border-b border-stone-medium flex items-center justify-between z-20">
           <h2 className="text-lg md:text-xl font-bold text-cream-light">{title}</h2>
