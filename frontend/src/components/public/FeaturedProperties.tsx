@@ -32,7 +32,7 @@ export default function FeaturedProperties() {
         const response = await fetch(`${API_URL}/properties?limit=6`)
         const data = await response.json()
         console.log('📥 Featured biens récupérés:', data)
-        
+
         let propertiesData = data.data || []
         setProperties(propertiesData)
       } catch (error) {
@@ -70,9 +70,9 @@ export default function FeaturedProperties() {
     <Section title="Nos biens disponibles" subtitle="Découvrez notre sélection de biens d'exception" background="stone">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {properties.slice(0, 6).map((property) => (
-          <div key={property._id} data-aos="fade-up">
-            <PropertyCard {...property} />
-          </div>
+          // ❌ SUPPRIMÉ : <div key={property._id} data-aos="fade-up">
+          // ✅ key directement sur PropertyCard, pas de wrapper AOS
+          <PropertyCard key={property._id} {...property} />
         ))}
       </div>
       <div className="text-center mt-10">
