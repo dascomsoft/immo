@@ -31,7 +31,7 @@ export default function PropertyTable({ properties, onDelete, onTogglePublish }:
 
   if (!properties || properties.length === 0) {
     return (
-      <div className="bg-stone-dark rounded-2xl p-8 text-center border border-stone-medium">
+      <div className="bg-stone-dark/50 rounded-2xl p-8 text-center border border-stone-medium/20">
         <p className="text-stone-light">Aucun bien trouvé</p>
         <Link 
           href="/admin/properties/add"
@@ -45,30 +45,32 @@ export default function PropertyTable({ properties, onDelete, onTogglePublish }:
 
   return (
     <>
-      <div className="bg-stone-dark rounded-2xl overflow-hidden border border-stone-medium">
+      <div className="bg-stone-dark/40 backdrop-blur-sm rounded-2xl overflow-hidden border border-stone-medium/20">
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-chocolate-deep">
+          <table className="w-full min-w-[640px]">
+            <thead className="bg-chocolate-deep/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Titre</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Prix</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Ville</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Statut</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Publié</th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-stone-light uppercase tracking-wider">Actions</th>
+                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Titre</th>
+                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Type</th>
+                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Prix</th>
+                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Ville</th>
+                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Statut</th>
+                <th className="px-4 md:px-6 py-3 text-left text-xs font-medium text-stone-light uppercase tracking-wider">Publié</th>
+                <th className="px-4 md:px-6 py-3 text-right text-xs font-medium text-stone-light uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-medium">
+            <tbody className="divide-y divide-stone-medium/20">
               {properties.map((property) => (
-                <tr key={property._id} className="hover:bg-chocolate-deep/50 transition-colors">
-                  <td className="px-6 py-4 text-cream-light font-medium">{property.title}</td>
-                  <td className="px-6 py-4 text-stone-light">{property.type}</td>
-                  <td className="px-6 py-4 text-bronze font-semibold">
+                <tr key={property._id} className="hover:bg-chocolate-deep/30 transition-colors">
+                  <td className="px-4 md:px-6 py-3 md:py-4 text-cream-light font-medium text-sm md:text-base truncate max-w-[120px] md:max-w-none">
+                    {property.title}
+                  </td>
+                  <td className="px-4 md:px-6 py-3 md:py-4 text-stone-light text-sm">{property.type}</td>
+                  <td className="px-4 md:px-6 py-3 md:py-4 text-bronze font-semibold text-sm md:text-base whitespace-nowrap">
                     {property.price.toLocaleString()} {property.currency}
                   </td>
-                  <td className="px-6 py-4 text-stone-light">{property.city}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-3 md:py-4 text-stone-light text-sm">{property.city}</td>
+                  <td className="px-4 md:px-6 py-3 md:py-4">
                     <span className={`inline-block px-2 py-1 rounded-full text-xs ${
                       property.status === 'AVAILABLE' 
                         ? 'bg-green-500/20 text-green-400' 
@@ -79,10 +81,10 @@ export default function PropertyTable({ properties, onDelete, onTogglePublish }:
                       {property.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-3 md:py-4">
                     <button 
                       onClick={() => onTogglePublish(property._id)}
-                      className="hover:scale-110 transition-transform"
+                      className="hover:scale-110 transition-transform p-1"
                     >
                       {property.published ? (
                         <Eye className="w-4 h-4 text-green-400 hover:text-green-300" />
@@ -91,17 +93,17 @@ export default function PropertyTable({ properties, onDelete, onTogglePublish }:
                       )}
                     </button>
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
+                  <td className="px-4 md:px-6 py-3 md:py-4 text-right">
+                    <div className="flex items-center justify-end gap-1 md:gap-2">
                       <Link
                         href={`/admin/properties/${property._id}`}
-                        className="p-2 hover:bg-chocolate-deep rounded-xl transition-colors"
+                        className="p-1.5 md:p-2 hover:bg-chocolate-deep rounded-xl transition-colors"
                       >
                         <Edit className="w-4 h-4 text-stone-light hover:text-bronze" />
                       </Link>
                       <button
                         onClick={() => handleDeleteClick(property._id)}
-                        className="p-2 hover:bg-chocolate-deep rounded-xl transition-colors"
+                        className="p-1.5 md:p-2 hover:bg-chocolate-deep rounded-xl transition-colors"
                       >
                         <Trash2 className="w-4 h-4 text-stone-light hover:text-red-400" />
                       </button>
